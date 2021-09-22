@@ -1,8 +1,6 @@
 # Weather App
 
-Replace this readme with your own information about your project.
-
-Start by briefly describing the assignment in a sentence or two. Keep it short and to the point.
+Using fetch in javascript to display weather data.
 
 ## The problem
 
