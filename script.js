@@ -1,27 +1,40 @@
-const API_URL = 'https://api.openweathermap.org/data/2.5/weather?q=Gothenburg,Sweden&units=metric&APPID=affe19113e10ebc0685623d229879d1f'
+const API_URL =
+  "https://api.openweathermap.org/data/2.5/weather?q=Gothenburg,Sweden&units=metric&APPID=affe19113e10ebc0685623d229879d1f";
+const API_URL_5DAY =
+  "https://api.openweathermap.org/data/2.5/forecast?q=Gothenburg,Sweden&units=metric&APPID=affe19113e10ebc0685623d229879d1f";
 
-const sunsetSunrise = document.getElementById('sunset-sunrise')
-const weatherContainer = document.getElementById('weather-container')
+const sunsetSunrise = document.getElementById("sunset-sunrise");
+const weatherContainer = document.getElementById("weather-container");
+const forecastContainer = document.getElementById("forecast-container");
 
 fetch(API_URL)
-.then((response) => response.json())
-.then((data) => {
-// This function adds a zero in case the time units consist of only one digit 
-    const addZero = sec => {
-        if (sec < 10) {
-            sec = '0' + sec;
-        }
-        return sec
-    }
-    let sunriseTime = new Date(data.sys.sunrise)
-    let sunsetTime = new Date(data.sys.sunset)
-    let formattedHourSunrise = addZero(sunriseTime.getHours()) + ':' + addZero(sunriseTime.getMinutes()) + ':' + addZero(sunriseTime.getSeconds()) 
-    let formattedHourSunset = addZero(sunsetTime.getHours()) + ':' +
-    addZero(sunsetTime.getMinutes()) + ':' + addZero(sunsetTime.getSeconds()) 
-    sunsetSunrise.innerHTML+= `
+  .then((response) => response.json())
+  .then((data) => {
+    // This function adds a zero in case the time units consist of only one digit
+    const addZero = (sec) => {
+      if (sec < 10) {
+        sec = "0" + sec;
+      }
+      return sec;
+    };
+    let sunriseTime = new Date(data.sys.sunrise);
+    let sunsetTime = new Date(data.sys.sunset);
+    let formattedHourSunrise =
+      addZero(sunriseTime.getHours()) +
+      ":" +
+      addZero(sunriseTime.getMinutes()) +
+      ":" +
+      addZero(sunriseTime.getSeconds());
+    let formattedHourSunset =
+      addZero(sunsetTime.getHours()) +
+      ":" +
+      addZero(sunsetTime.getMinutes()) +
+      ":" +
+      addZero(sunsetTime.getSeconds());
+    sunsetSunrise.innerHTML += `
     <h2>Sunrise: ${formattedHourSunrise}</h2>
     <h2>Sunset: ${formattedHourSunset}</h2>
-    `
+    `;
     //If else statement med de olika ikonerna
     text.innerHTML += `
     <img src="./Designs/Design-2/icons/noun_Cloud_1188486.svg" alt="cloud icon">
@@ -34,18 +47,18 @@ fetch(API_URL)
     <h2>City: ${data.name}</h2>
     <h2>Temperature: ${data.main.temp.toFixed(1)} C°</h2>
     <h2>Type of weather: ${data.weather[0].description}</h2>
-    `
-})
-.catch((error) => console.error(error))
+    `;
+  })
+  .catch((error) => console.error(error));
 
-
-// Idas förslag på vårt problem:
-const API_URL_5DAY =
-  "https://api.openweathermap.org/data/2.5/forecast?q=Gothenburg,Sweden&units=metric&APPID=affe19113e10ebc0685623d229879d1f";
-
-  //Låter denna ligga kvar för nu.
-const forecastContainer = document.getElementById("forecast-container");
-
+//Function for turning a date to a string short weekday
+const getWeekDay = (data) => {
+  const dateDay = new Date(data * 1000); //Timestamp to milliseconds
+  return dateDay.toLocaleDateString("en-GB", {
+    //Setting how to show day
+    weekday: "short",
+  });
+};
 
 fetch(API_URL_5DAY)
   .then((response) => response.json())
@@ -56,39 +69,46 @@ fetch(API_URL_5DAY)
     );
     console.log("FILTEREDFORECAST!", filteredForecast);
 
-    const currentGothenburgDate = new Date(filteredForecast[0].dt * 1000);
-    console.log("CURRENT DATE", currentGothenburgDate);
-    forecastContainer.innerHTML += `
-    <h1>Datum:${currentGothenburgDate.getDay()}</h1>
-    `
-    /////// end of section /////////////
-
     forecastContainer.innerHTML += `
     <table>
     <th>Weekday</th>
     <th>Temperature</th>
     <tr>
-     <td>${filteredForecast[0].dt}</td>
+     <td>${getWeekDay(filteredForecast[0].dt)}</td>
      <td class="degrees">${filteredForecast[0].main.temp.toFixed(1)} C°</td>
-    
+    </tr>
+    <tr>
+     <td>${getWeekDay(filteredForecast[1].dt)}</td>
+     <td class="degrees">${filteredForecast[1].main.temp.toFixed(1)} C°</td> 
+    </tr>
+    <tr>
+     <td>${getWeekDay(filteredForecast[2].dt)}</td>
+     <td class="degrees">${filteredForecast[2].main.temp.toFixed(1)} C°</td>
+    </tr>
+    <tr>
+     <td>${getWeekDay(filteredForecast[3].dt)}</td>
+     <td class="degrees">${filteredForecast[3].main.temp.toFixed(1)} C°</td>
+    </tr>
+    <tr>
+     <td>${getWeekDay(filteredForecast[4].dt)}</td>
+     <td class="degrees">${filteredForecast[4].main.temp.toFixed(1)} C°</td>
     </tr>
       </table>
       `;
-    })
-    
+  })
 
-    // forecastContainer.innerHTML += `
+  // forecastContainer.innerHTML += `
   //   <table>
   //   <th>Weekday</th>
   //   <th>Temperature</th>
   //   <tr>
   //    <td>${filteredForecast[0].dt}</td>
   //    <td class="degrees">${filteredForecast[0].main.temp.toFixed(1)} C°</td>
-    
+
   //   </tr>
   //   <tr>
   //    <td>${filteredForecast[1].dt_txt.substring(0, 10)}</td>
-  //    <td class="degrees">${filteredForecast[1].main.temp.toFixed(1)} C°</td> 
+  //    <td class="degrees">${filteredForecast[1].main.temp.toFixed(1)} C°</td>
   //   </tr>
   //   <tr>
   //    <td>${filteredForecast[2].dt_txt.substring(0, 10)}</td>
@@ -108,52 +128,40 @@ fetch(API_URL_5DAY)
 
   .catch((error) => console.error(error));
 
+// fetch(WEATHER_API_URL)
+// .then((res) => res.json())
+// .then((data) => {
+//   console.log("DATA", data);
 
+//   // const sunsetTaipeiDate = new Date(
+//   //   (data.sys.sunset + data.timezone + new Date().getTimezoneOffset() * 60) *
+//   //     1000
+//   const sunriseStockholmDate = new Date(
+//     (data.sys.sunrise + data.timezone + new Date().getTimezoneOffset() * 60) *
+//       1000
+//   );
+//   console.log("SUNRISE Stockholm", sunriseStockholmDate);
 
-  // fetch(WEATHER_API_URL)
-  // .then((res) => res.json())
-  // .then((data) => {
-  //   console.log("DATA", data);
+//   const sunsetStockholmDate = new Date(
+//     (data.sys.sunset + data.timezone + new Date().getTimezoneOffset() * 60) *
+//       1000
+//   );
+//   console.log("SUNSET Stockholm", sunsetStockholmDate);
+// });
 
- 
-  
+///////// weekdays /////////////////
 
+// const theDate = new Date(filteredForecast[0].dt_txt.substring(0, 10))
 
+// const weekday = new Array(7); //has to be named Array - dont know why
+// weekday[0] = "Sunday";
+// weekday[1] = "Monday";
+// weekday[2] = "Tuesday";
+// weekday[3] = "Wednesday";
+// weekday[4] = "Thursday";
+// weekday[5] = "Friday";
+// weekday[6] = "Saturday";
 
+// const correctDay = weekday[theDate.getDay()];
 
-  //   // const sunsetTaipeiDate = new Date(
-  //   //   (data.sys.sunset + data.timezone + new Date().getTimezoneOffset() * 60) *
-  //   //     1000
-  //   const sunriseStockholmDate = new Date(
-  //     (data.sys.sunrise + data.timezone + new Date().getTimezoneOffset() * 60) *
-  //       1000
-  //   );
-  //   console.log("SUNRISE Stockholm", sunriseStockholmDate);
-
-  //   const sunsetStockholmDate = new Date(
-  //     (data.sys.sunset + data.timezone + new Date().getTimezoneOffset() * 60) *
-  //       1000
-  //   );
-  //   console.log("SUNSET Stockholm", sunsetStockholmDate);
-  // });
-
-
-
-
-      ///////// weekdays /////////////////
-
-
-    // const theDate = new Date(filteredForecast[0].dt_txt.substring(0, 10))
-
-    // const weekday = new Array(7); //has to be named Array - dont know why
-    // weekday[0] = "Sunday";
-    // weekday[1] = "Monday";
-    // weekday[2] = "Tuesday";
-    // weekday[3] = "Wednesday";
-    // weekday[4] = "Thursday";
-    // weekday[5] = "Friday";
-    // weekday[6] = "Saturday";
-
-    // const correctDay = weekday[theDate.getDay()];
-
-    // console.log("a weekday", correctDay)
+// console.log("a weekday", correctDay)
